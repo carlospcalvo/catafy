@@ -21,9 +21,9 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@catafy-ts/db": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
-    "zod": "catalog:",
-    "@catafy-ts/db": "workspace:*"
+    "zod": "catalog:"
   }
 }
