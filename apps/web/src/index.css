@@ -4,8 +4,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Inter", "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
@@ -18,6 +19,20 @@ body {
 }
 
 :root {
+  /* Added custom pastel color palette from ColorHunt */
+  --color-pastel-blue: #6dc5d1;
+  --color-pastel-yellow: #fde49e;
+  --color-pastel-orange: #feb941;
+  --color-pastel-dark-orange: #dd761c;
+
+  /* Custom color variations for different shades */
+  --color-pastel-blue-light: #8dd3de;
+  --color-pastel-blue-dark: #5bb5c2;
+  --color-pastel-yellow-light: #fef0c7;
+  --color-pastel-yellow-dark: #fcdc75;
+  --color-pastel-orange-light: #fec96a;
+  --color-pastel-orange-dark: #fea518;
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -87,6 +102,20 @@ body {
 }
 
 @theme inline {
+  /* Added custom pastel color palette from ColorHunt */
+  --color-pastel-blue: #6dc5d1;
+  --color-pastel-yellow: #fde49e;
+  --color-pastel-orange: #feb941;
+  --color-pastel-dark-orange: #dd761c;
+
+  /* Custom color variations for different shades */
+  --color-pastel-blue-light: #8dd3de;
+  --color-pastel-blue-dark: #5bb5c2;
+  --color-pastel-yellow-light: #fef0c7;
+  --color-pastel-yellow-dark: #fcdc75;
+  --color-pastel-orange-light: #fec96a;
+  --color-pastel-orange-dark: #fea518;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
