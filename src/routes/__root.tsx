@@ -15,6 +15,7 @@ function RootDocument() {
         closeButton
         toastOptions={{ className: 'text-sm' }}
         offset={{ top: 'max(env(safe-area-inset-top), 8px)' }}
+        mobileOffset={{ top: 'max(env(safe-area-inset-top), 8px)' }}
       />
     </>
   )
