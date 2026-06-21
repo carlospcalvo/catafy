@@ -22,19 +22,19 @@ export function GoogleSignInButton({ onToken }: GoogleSignInButtonProps) {
     script.onload = () => {
       google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
-        locale: 'es-419',
         callback: (response) => {
           if (response.credential) {
             setStoredToken(response.credential)
             onToken(response.credential)
           }
         },
-      })
+      } satisfies google.accounts.id.IdConfiguration)
       google.accounts.id.renderButton(btnRef.current!, {
+        type: 'standard',
         theme: 'outline',
         size: 'large',
         text: 'continue_with',
-      })
+      } satisfies google.accounts.id.GsiButtonConfiguration)
       google.accounts.id.prompt()
     }
   }, [onToken])

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { GoogleSignInButton } from '#/components/google-sign-in-button'
 import { ExpenseForm } from '#/components/expense-form'
@@ -12,8 +12,7 @@ import {
   useDeleteExpense,
 } from '#/queries/use-expense-mutations'
 import { useAddDescription } from '#/queries/use-description-mutation'
-import { detectWhoPaid, isTokenExpired } from '#/lib/jwt'
-import { getStoredToken, clearStoredToken } from '#/lib/storage'
+import { useAuth } from '#/lib/use-auth'
 import type { Expense, ExpenseFormData } from '#/types/expense'
 import { toast } from 'sonner'
 import { LogOut, RefreshCw } from 'lucide-react'
@@ -21,11 +20,7 @@ import { LogOut, RefreshCw } from 'lucide-react'
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
-  const [token, setToken] = useState<string | null>(getStoredToken)
-  const [defaultWhoPaid, setDefaultWhoPaid] = useState<string>(() => {
-    const stored = getStoredToken()
-    return stored ? detectWhoPaid(stored) : ''
-  })
+  const { token, whoPaid, handleToken, handleSessionExpired, signOut } = useAuth()
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
   const [deletingExpense, setDeletingExpense] = useState<Expense | null>(null)
   const [formKey, setFormKey] = useState(0)
@@ -52,37 +47,6 @@ function Home() {
     createMutation.isPending ||
     updateMutation.isPending ||
     deleteMutation.isPending
-
-  const handleSessionExpired = useCallback(() => {
-    clearStoredToken()
-    setToken(null)
-    toast.error('Sesión expirada')
-  }, [])
-
-  useEffect(() => {
-    const check = () => {
-      const stored = getStoredToken()
-      if (stored && isTokenExpired(stored)) {
-        handleSessionExpired()
-      }
-    }
-    check()
-    document.addEventListener('visibilitychange', check)
-    return () => document.removeEventListener('visibilitychange', check)
-  }, [handleSessionExpired])
-
-  const handleToken = useCallback((credential: string) => {
-    setToken(credential)
-    setDefaultWhoPaid(detectWhoPaid(credential))
-  }, [])
-
-  const handleSignOut = () => {
-    try {
-      google.accounts.id.disableAutoSelect()
-    } catch {}
-    clearStoredToken()
-    setToken(null)
-  }
 
   const handleSubmit = (data: ExpenseFormData) => {
     const onError = (err: Error) => {
@@ -183,7 +147,7 @@ function Home() {
         </div>
         <button
           type="button"
-          onClick={handleSignOut}
+          onClick={signOut}
           className="flex cursor-pointer items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <LogOut className="h-4 w-4" />
@@ -202,7 +166,7 @@ function Home() {
           <ExpenseForm
             key={editingExpense?.id ?? formKey}
             editingExpense={editingExpense}
-            defaultWhoPaid={defaultWhoPaid}
+            defaultWhoPaid={whoPaid}
             descriptions={lists?.descriptions ?? []}
             categories={lists?.categories ?? []}
             paymentMethods={lists?.paymentMethods ?? []}
