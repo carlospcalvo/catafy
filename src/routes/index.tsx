@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { GoogleSignInButton } from '#/components/google-sign-in-button'
 import { ExpenseForm } from '#/components/expense-form'
@@ -12,7 +12,7 @@ import {
   useDeleteExpense,
 } from '#/queries/use-expense-mutations'
 import { useAddDescription } from '#/queries/use-description-mutation'
-import { detectWhoPaid } from '#/lib/jwt'
+import { detectWhoPaid, isTokenExpired } from '#/lib/jwt'
 import { getStoredToken, clearStoredToken } from '#/lib/storage'
 import type { Expense, ExpenseFormData } from '#/types/expense'
 import { toast } from 'sonner'
@@ -48,6 +48,24 @@ function Home() {
     updateMutation.isPending ||
     deleteMutation.isPending
 
+  const handleSessionExpired = useCallback(() => {
+    clearStoredToken()
+    setToken(null)
+    toast.error('Sesión expirada')
+  }, [])
+
+  useEffect(() => {
+    const check = () => {
+      const stored = getStoredToken()
+      if (stored && isTokenExpired(stored)) {
+        handleSessionExpired()
+      }
+    }
+    check()
+    document.addEventListener('visibilitychange', check)
+    return () => document.removeEventListener('visibilitychange', check)
+  }, [handleSessionExpired])
+
   const handleToken = useCallback((credential: string) => {
     setToken(credential)
     setDefaultWhoPaid(detectWhoPaid(credential))
@@ -60,6 +78,13 @@ function Home() {
   }
 
   const handleSubmit = (data: ExpenseFormData) => {
+    const onError = (err: Error) => {
+      if (err.message === 'Sesión expirada') {
+        handleSessionExpired()
+      } else {
+        toast.error(err.message)
+      }
+    }
     if (editingExpense) {
       updateMutation.mutate(
         { id: editingExpense.id, data },
@@ -68,7 +93,7 @@ function Home() {
             setEditingExpense(null)
             toast.success('Gasto actualizado')
           },
-          onError: (err) => toast.error(err.message),
+          onError,
         },
       )
     } else {
@@ -77,7 +102,7 @@ function Home() {
           setFormKey((k) => k + 1)
           toast.success('Gasto agregado')
         },
-        onError: (err) => toast.error(err.message),
+        onError,
       })
     }
   }
@@ -85,9 +110,15 @@ function Home() {
   const handleAddDescription = useCallback((description: string) => {
     addDescriptionMutation.mutate(description, {
       onSuccess: () => toast.success('Descripción creada'),
-      onError: (err) => toast.error(err.message),
+      onError: (err) => {
+        if (err.message === 'Sesión expirada') {
+          handleSessionExpired()
+        } else {
+          toast.error(err.message)
+        }
+      },
     })
-  }, [addDescriptionMutation])
+  }, [addDescriptionMutation, handleSessionExpired])
 
   const handleDeleteConfirm = () => {
     if (!deletingExpense) return
@@ -96,7 +127,13 @@ function Home() {
         setDeletingExpense(null)
         toast.success('Gasto eliminado')
       },
-      onError: (err) => toast.error(err.message),
+      onError: (err) => {
+        if (err.message === 'Sesión expirada') {
+          handleSessionExpired()
+        } else {
+          toast.error(err.message)
+        }
+      },
     })
   }
 

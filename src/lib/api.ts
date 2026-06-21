@@ -1,4 +1,6 @@
 import type { ListsResponse, RecentExpensesResponse, MutationResponse, ExpenseFormData } from '#/types/expense'
+import { isTokenExpired } from '#/lib/jwt'
+import { clearStoredToken } from '#/lib/storage'
 
 const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL ?? ''
 
@@ -10,7 +12,15 @@ function buildParams(fields: Record<string, string | number | null>): URLSearchP
   return params
 }
 
+function guardToken(idToken: string) {
+  if (isTokenExpired(idToken)) {
+    clearStoredToken()
+    throw new Error('Sesión expirada')
+  }
+}
+
 export async function fetchLists(idToken: string): Promise<ListsResponse> {
+  guardToken(idToken)
   const body = new URLSearchParams({ token: idToken, action: 'lists' })
   const res = await fetch(APPS_SCRIPT_URL, {
     method: 'POST',
@@ -22,6 +32,7 @@ export async function fetchLists(idToken: string): Promise<ListsResponse> {
 }
 
 export async function fetchRecentExpenses(idToken: string): Promise<RecentExpensesResponse> {
+  guardToken(idToken)
   const body = new URLSearchParams({ token: idToken, action: 'recent' })
   const res = await fetch(APPS_SCRIPT_URL, {
     method: 'POST',
@@ -33,6 +44,7 @@ export async function fetchRecentExpenses(idToken: string): Promise<RecentExpens
 }
 
 async function postAndCheck(body: URLSearchParams): Promise<MutationResponse> {
+  // guardToken is called by the caller before this
   const res = await fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -45,23 +57,27 @@ async function postAndCheck(body: URLSearchParams): Promise<MutationResponse> {
 }
 
 export async function createExpense(idToken: string, data: ExpenseFormData): Promise<MutationResponse> {
+  guardToken(idToken)
   const params = buildParams({ action: 'create', ...data })
   params.set('token', idToken)
   return postAndCheck(params)
 }
 
 export async function updateExpense(idToken: string, id: string, data: ExpenseFormData): Promise<MutationResponse> {
+  guardToken(idToken)
   const params = buildParams({ action: 'update', id, ...data })
   params.set('token', idToken)
   return postAndCheck(params)
 }
 
 export async function addDescription(idToken: string, description: string): Promise<MutationResponse> {
+  guardToken(idToken)
   const body = new URLSearchParams({ token: idToken, action: 'add-description', description })
   return postAndCheck(body)
 }
 
 export async function deleteExpense(idToken: string, id: string): Promise<MutationResponse> {
+  guardToken(idToken)
   const body = new URLSearchParams({ token: idToken, action: 'delete', id })
   const res = await fetch(APPS_SCRIPT_URL, {
     method: 'POST',

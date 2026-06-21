@@ -18,6 +18,13 @@ export function decodeJwt(token: string): Record<string, unknown> | null {
   }
 }
 
+export function isTokenExpired(token: string): boolean {
+  const payload = decodeJwt(token)
+  if (!payload) return true
+  const exp = payload.exp as number
+  return Date.now() / 1000 >= exp
+}
+
 export function detectWhoPaid(token: string): string {
   const payload = decodeJwt(token)
   if (!payload) return ''
