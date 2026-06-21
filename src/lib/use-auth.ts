@@ -1,21 +1,21 @@
 import { useState, useCallback, useEffect } from 'react'
-import { detectWhoPaid, isTokenExpired } from '#/lib/jwt'
+import { isTokenExpired } from '#/lib/jwt'
 import { getStoredToken, clearStoredToken } from '#/lib/storage'
 import { toast } from 'sonner'
 
 export function useAuth() {
-  const [{ token, whoPaid }, setAuthState] = useState(() => {
+  const [token, setToken] = useState<string | null>(() => {
     const stored = getStoredToken()
     if (stored && isTokenExpired(stored)) {
       clearStoredToken()
-      return { token: null as string | null, whoPaid: '' }
+      return null
     }
-    return { token: stored, whoPaid: stored ? detectWhoPaid(stored) : '' }
+    return stored
   })
 
   const handleSessionExpired = useCallback(() => {
     clearStoredToken()
-    setAuthState({ token: null, whoPaid: '' })
+    setToken(null)
     toast.error('Sesión expirada')
   }, [])
 
@@ -32,14 +32,14 @@ export function useAuth() {
   }, [handleSessionExpired])
 
   const handleToken = useCallback((credential: string) => {
-    setAuthState({ token: credential, whoPaid: detectWhoPaid(credential) })
+    setToken(credential)
   }, [])
 
   const signOut = useCallback(() => {
     try { google.accounts.id.disableAutoSelect() } catch {}
     clearStoredToken()
-    setAuthState({ token: null, whoPaid: '' })
+    setToken(null)
   }, [])
 
-  return { token, whoPaid, handleToken, handleSessionExpired, signOut }
+  return { token, handleToken, handleSessionExpired, signOut }
 }
