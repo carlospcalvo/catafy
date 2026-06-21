@@ -198,18 +198,20 @@ function Home() {
         {mutationError && (
           <p className="mb-3 text-xs text-destructive">{mutationError}</p>
         )}
-        <ExpenseForm
-          key={editingExpense?.id ?? formKey}
-          editingExpense={editingExpense}
-          defaultWhoPaid={defaultWhoPaid}
-          descriptions={lists?.descriptions ?? []}
-          categories={lists?.categories ?? []}
-          paymentMethods={lists?.paymentMethods ?? []}
-          onSubmit={handleSubmit}
-          onCancel={() => setEditingExpense(null)}
-          isPending={isPending}
-          onAddDescription={handleAddDescription}
-        />
+        <div className="rounded-lg border p-4">
+          <ExpenseForm
+            key={editingExpense?.id ?? formKey}
+            editingExpense={editingExpense}
+            defaultWhoPaid={defaultWhoPaid}
+            descriptions={lists?.descriptions ?? []}
+            categories={lists?.categories ?? []}
+            paymentMethods={lists?.paymentMethods ?? []}
+            onSubmit={handleSubmit}
+            onCancel={() => setEditingExpense(null)}
+            isPending={isPending}
+            onAddDescription={handleAddDescription}
+          />
+        </div>
       </div>
 
       <div>
