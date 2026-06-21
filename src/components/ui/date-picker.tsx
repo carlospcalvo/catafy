@@ -64,6 +64,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
       {/* Mobile bottom sheet — isolated state */}
       <div className="sm:hidden">
         <Button
+          type="button"
           variant="outline"
           onClick={() => setMobileOpen(true)}
           className={cn(
