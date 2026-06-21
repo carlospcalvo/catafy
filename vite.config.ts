@@ -13,25 +13,8 @@ const config = defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'favicon.svg', 'favicon-96x96.png', 'apple-touch-icon.png', 'icons/*.png'],
-      manifest: {
-        name: 'Catafy',
-        short_name: 'Catafy',
-        description: 'Cata & Carli — expense tracker',
-        theme_color: '#173a40',
-        background_color: '#e7f3ec',
-        display: 'standalone',
-        display_override: ['standalone', 'minimal-ui'],
-        scope: '/',
-        start_url: '/',
-        categories: ['finance', 'lifestyle'],
-        lang: 'es',
-        icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/web-app-manifest-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
-          { src: '/web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-        ],
-      },
+      manifest: false,
+      injectRegister: false,
     }),
   ],
 })
