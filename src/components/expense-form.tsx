@@ -165,7 +165,7 @@ export function ExpenseForm({
           >
             <NumberFieldGroup>
               <NumberFieldDecrement />
-              <NumberFieldInput />
+              <NumberFieldInput style={{ fontSize: 16 }} />
               <NumberFieldIncrement />
             </NumberFieldGroup>
           </NumberField>

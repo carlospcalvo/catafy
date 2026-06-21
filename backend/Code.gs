@@ -11,7 +11,8 @@
 
 // ── Config ──────────────────────────────────────────────────────────
 var ALLOWED_EMAILS = ['catagracia8@gmail.com', 'carloscalvonazabal@gmail.com']
-var OAUTH_CLIENT_ID = '999086101021-1gs8qqhmt26dbkgc192rm2aqds1upr9q.apps.googleusercontent.com'
+var OAUTH_CLIENT_ID =
+  '999086101021-1gs8qqhmt26dbkgc192rm2aqds1upr9q.apps.googleusercontent.com'
 
 // Column indices in the "Expenses" tab (1-indexed, matching Sheet API)
 var COL_ID = 1
@@ -49,12 +50,12 @@ function doPost(e) {
   }
 }
 
-
 // ── Handlers ────────────────────────────────────────────────────────
 
 function handleLists() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TAB_LISTS)
-  if (!sheet) return respond({ descriptions: [], categories: [], paymentMethods: [] })
+  if (!sheet)
+    return respond({ descriptions: [], categories: [], paymentMethods: [] })
 
   var data = sheet.getDataRange().getValues()
   var descriptions = []
@@ -67,12 +68,17 @@ function handleLists() {
     if (data[i][2]) paymentMethods.push(data[i][2])
   }
 
-  return respond({ descriptions: descriptions, categories: categories, paymentMethods: paymentMethods })
+  return respond({
+    descriptions: descriptions,
+    categories: categories,
+    paymentMethods: paymentMethods,
+  })
 }
 
 function handleAddDescription(data) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TAB_LISTS)
-  if (!data.description) return respond({ success: false, error: 'Descripción vacía' })
+  if (!data.description)
+    return respond({ success: false, error: 'Descripción vacía' })
 
   // Find the first empty row in column A, or append at the end
   sheet.appendRow([data.description])
@@ -140,7 +146,9 @@ function handleUpdate(data) {
   sheet.getRange(rowIndex, COL_WHO_PAID).setValue(data.whoPaid)
   sheet.getRange(rowIndex, COL_PAYMENT_METHOD).setValue(data.paymentMethod)
   sheet.getRange(rowIndex, COL_NOTES).setValue(data.notes || '')
-  sheet.getRange(rowIndex, COL_INSTALLMENTS).setValue(data.installments ? Number(data.installments) : 1)
+  sheet
+    .getRange(rowIndex, COL_INSTALLMENTS)
+    .setValue(data.installments ? Number(data.installments) : 1)
 
   return respond({ success: true })
 }
@@ -166,7 +174,9 @@ function rowToExpense(row) {
     whoPaid: row[COL_WHO_PAID - 1],
     paymentMethod: row[COL_PAYMENT_METHOD - 1],
     notes: row[COL_NOTES - 1] || '',
-    installments: row[COL_INSTALLMENTS - 1] ? Number(row[COL_INSTALLMENTS - 1]) : 1,
+    installments: row[COL_INSTALLMENTS - 1]
+      ? Number(row[COL_INSTALLMENTS - 1])
+      : 1,
   }
 }
 
@@ -213,10 +223,16 @@ function verifyRequest(e) {
   var result = {}
 
   var token = extractToken(e)
-  if (!token) { result.reason = 'no_token'; return result }
+  if (!token) {
+    result.reason = 'no_token'
+    return result
+  }
 
   var tokenInfo = verifyGoogleToken(token)
-  if (!tokenInfo) { result.reason = 'token_verification_failed'; return result }
+  if (!tokenInfo) {
+    result.reason = 'token_verification_failed'
+    return result
+  }
 
   if (tokenInfo.audience !== OAUTH_CLIENT_ID) {
     result.reason = 'audience_mismatch'
@@ -236,14 +252,15 @@ function verifyRequest(e) {
   return result
 }
 
-
 function extractToken(e) {
   // Works for GET (query params) and POST (form-encoded body)
   return e.parameter && e.parameter.token
 }
 
 function verifyGoogleToken(idToken) {
-  var url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(idToken)
+  var url =
+    'https://oauth2.googleapis.com/tokeninfo?id_token=' +
+    encodeURIComponent(idToken)
 
   try {
     var response = UrlFetchApp.fetch(url, { muteHttpExceptions: true })
@@ -266,7 +283,7 @@ function verifyGoogleToken(idToken) {
 // ── Response helper ─────────────────────────────────────────────────
 
 function respond(body) {
-  return ContentService
-    .createTextOutput(JSON.stringify(body))
-    .setMimeType(ContentService.MimeType.JSON)
+  return ContentService.createTextOutput(JSON.stringify(body)).setMimeType(
+    ContentService.MimeType.JSON,
+  )
 }
