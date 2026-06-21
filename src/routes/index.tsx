@@ -4,7 +4,6 @@ import { GoogleSignInButton } from '#/components/google-sign-in-button'
 import { ExpenseForm } from '#/components/expense-form'
 import { ExpenseList } from '#/components/expense-list'
 import { DeleteConfirmDialog } from '#/components/delete-confirm-dialog'
-import { PullToRefresh } from '#/components/pull-to-refresh'
 import { useLists } from '#/queries/use-lists'
 import { useRecentExpenses } from '#/queries/use-recent-expenses'
 import {
@@ -17,7 +16,7 @@ import { detectWhoPaid } from '#/lib/jwt'
 import { getStoredToken, clearStoredToken } from '#/lib/storage'
 import type { Expense, ExpenseFormData } from '#/types/expense'
 import { toast } from 'sonner'
-import { LogOut } from 'lucide-react'
+import { LogOut, RefreshCw } from 'lucide-react'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -32,7 +31,7 @@ function Home() {
   const [formKey, setFormKey] = useState(0)
 
   const { data: lists } = useLists(token)
-  const { data: recent, isLoading: loadingExpenses, refetch: refetchExpenses } = useRecentExpenses(token)
+  const { data: recent, isLoading: loadingExpenses, isFetching, refetch: refetchExpenses } = useRecentExpenses(token)
 
   const createMutation = useCreateExpense(token ?? '')
   const updateMutation = useUpdateExpense(token ?? '')
@@ -145,49 +144,57 @@ function Home() {
         </button>
       </div>
 
-      <PullToRefresh onRefresh={refetchExpenses}>
-        <div className="mb-8">
-          <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-            {editingExpense ? 'Editar gasto' : 'Nuevo gasto'}
-          </h2>
-          {mutationError && (
-            <p className="mb-3 text-xs text-destructive">{mutationError}</p>
-          )}
-          <ExpenseForm
-            key={editingExpense?.id ?? formKey}
-            editingExpense={editingExpense}
-            defaultWhoPaid={defaultWhoPaid}
-            descriptions={lists?.descriptions ?? []}
-            categories={lists?.categories ?? []}
-            paymentMethods={lists?.paymentMethods ?? []}
-            onSubmit={handleSubmit}
-            onCancel={() => setEditingExpense(null)}
-            isPending={isPending}
-            onAddDescription={handleAddDescription}
-          />
-        </div>
+      <div className="mb-8">
+        <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+          {editingExpense ? 'Editar gasto' : 'Nuevo gasto'}
+        </h2>
+        {mutationError && (
+          <p className="mb-3 text-xs text-destructive">{mutationError}</p>
+        )}
+        <ExpenseForm
+          key={editingExpense?.id ?? formKey}
+          editingExpense={editingExpense}
+          defaultWhoPaid={defaultWhoPaid}
+          descriptions={lists?.descriptions ?? []}
+          categories={lists?.categories ?? []}
+          paymentMethods={lists?.paymentMethods ?? []}
+          onSubmit={handleSubmit}
+          onCancel={() => setEditingExpense(null)}
+          isPending={isPending}
+          onAddDescription={handleAddDescription}
+        />
+      </div>
 
-        <div>
-          <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-medium text-muted-foreground">
             Gastos recientes
           </h2>
-          <ExpenseList
-            expenses={expenses}
-            isLoading={loadingExpenses}
-            onEdit={setEditingExpense}
-            onDelete={setDeletingExpense}
-          />
+          <button
+            type="button"
+            onClick={() => refetchExpenses()}
+            className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground active:text-foreground"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+            Actualizar
+          </button>
         </div>
-
-        <DeleteConfirmDialog
-          open={!!deletingExpense}
-          onOpenChange={(open) => {
-            if (!open) setDeletingExpense(null)
-          }}
-          onConfirm={handleDeleteConfirm}
-          isPending={deleteMutation.isPending}
+        <ExpenseList
+          expenses={expenses}
+          isLoading={loadingExpenses}
+          onEdit={setEditingExpense}
+          onDelete={setDeletingExpense}
         />
-      </PullToRefresh>
+      </div>
+
+      <DeleteConfirmDialog
+        open={!!deletingExpense}
+        onOpenChange={(open) => {
+          if (!open) setDeletingExpense(null)
+        }}
+        onConfirm={handleDeleteConfirm}
+        isPending={deleteMutation.isPending}
+      />
     </div>
   )
 }
