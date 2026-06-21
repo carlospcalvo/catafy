@@ -4,9 +4,7 @@ import { Label } from '#/components/ui/label'
 import { Combobox } from '#/components/ui/combobox'
 import {
   NumberField,
-  NumberFieldDecrement,
   NumberFieldGroup,
-  NumberFieldIncrement,
   NumberFieldInput,
 } from '#/components/reui/number-field'
 import { SelectSheet } from '#/components/ui/select-sheet'
@@ -168,9 +166,7 @@ export function ExpenseForm({
             format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}
           >
             <NumberFieldGroup>
-              <NumberFieldDecrement />
               <NumberFieldInput style={{ fontSize: 16 }} />
-              <NumberFieldIncrement />
             </NumberFieldGroup>
           </NumberField>
           {errors.amount && (
