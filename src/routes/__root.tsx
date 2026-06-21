@@ -14,6 +14,7 @@ function RootDocument() {
         richColors
         closeButton
         toastOptions={{ className: 'text-sm' }}
+        offset={{ top: 'max(env(safe-area-inset-top), 8px)' }}
       />
     </>
   )

@@ -6,10 +6,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-[data-sonner-toaster] {
-  padding-top: env(safe-area-inset-top, 0px);
-}
-
 :root {
   --sea-ink: #173a40;
   --sea-ink-soft: #416166;
