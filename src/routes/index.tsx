@@ -16,7 +16,7 @@ import { detectWhoPaid } from '#/lib/jwt'
 import { getStoredToken, clearStoredToken } from '#/lib/storage'
 import type { Expense, ExpenseFormData } from '#/types/expense'
 import { toast } from 'sonner'
-import { ReceiptText, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -106,7 +106,7 @@ function Home() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <div className="mb-6 flex flex-col items-center gap-2">
-          <ReceiptText className="h-12 w-12 text-(--lagoon)" />
+          <img src="/catafy-logo.png" alt="Catafy" className="h-20 w-20" />
           <h1
             className="text-2xl font-semibold display-title"
             style={{ fontFamily: "'Fraunces', Georgia, serif" }}

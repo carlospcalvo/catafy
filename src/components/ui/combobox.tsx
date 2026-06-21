@@ -58,7 +58,7 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar…"
-          className="h-10 w-full border-b border-border bg-transparent pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground"
+          className="h-10 w-full border-b border-border bg-transparent pl-9 pr-3 text-sm max-sm:text-base outline-none placeholder:text-muted-foreground"
           autoFocus
         />
       </div>
@@ -107,7 +107,7 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             className={cn(
-              'flex h-9 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors',
+              'flex h-9 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm max-sm:text-base shadow-sm transition-colors',
               !value && 'text-muted-foreground',
               className,
             )}
@@ -127,7 +127,7 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           type="button"
           onClick={() => setMobileOpen(true)}
           className={cn(
-            'flex h-9 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors',
+            'flex h-9 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm max-sm:text-base shadow-sm transition-colors',
             !value && 'text-muted-foreground',
             className,
           )}
