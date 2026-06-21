@@ -20,6 +20,11 @@ const config = defineConfig({
         theme_color: '#173a40',
         background_color: '#e7f3ec',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
+        scope: '/',
+        start_url: '/',
+        categories: ['finance', 'lifestyle'],
+        lang: 'es',
         icons: [
           { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },

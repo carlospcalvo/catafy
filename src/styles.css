@@ -157,6 +157,11 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+html {
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
 html,
 body,
 #app {
@@ -176,6 +181,19 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  padding:
+    env(safe-area-inset-top, 0px)
+    env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px)
+    env(safe-area-inset-left, 0px);
+}
+
+input, textarea, [contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 body::before {
@@ -275,6 +293,7 @@ pre code {
 button,
 .island-shell,
 a {
+  touch-action: manipulation;
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease,
     transform 180ms ease;
 }
