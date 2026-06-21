@@ -4,6 +4,7 @@ import { GoogleSignInButton } from '#/components/google-sign-in-button'
 import { ExpenseForm } from '#/components/expense-form'
 import { ExpenseList } from '#/components/expense-list'
 import { DeleteConfirmDialog } from '#/components/delete-confirm-dialog'
+import { PullToRefresh } from '#/components/pull-to-refresh'
 import { useLists } from '#/queries/use-lists'
 import { useRecentExpenses } from '#/queries/use-recent-expenses'
 import {
@@ -31,7 +32,7 @@ function Home() {
   const [formKey, setFormKey] = useState(0)
 
   const { data: lists } = useLists(token)
-  const { data: recent, isLoading: loadingExpenses } = useRecentExpenses(token)
+  const { data: recent, isLoading: loadingExpenses, refetch: refetchExpenses } = useRecentExpenses(token)
 
   const createMutation = useCreateExpense(token ?? '')
   const updateMutation = useUpdateExpense(token ?? '')
@@ -144,47 +145,49 @@ function Home() {
         </button>
       </div>
 
-      <div className="mb-8">
-        <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-          {editingExpense ? 'Editar gasto' : 'Nuevo gasto'}
-        </h2>
-        {mutationError && (
-          <p className="mb-3 text-xs text-destructive">{mutationError}</p>
-        )}
-        <ExpenseForm
-          key={editingExpense?.id ?? formKey}
-          editingExpense={editingExpense}
-          defaultWhoPaid={defaultWhoPaid}
-          descriptions={lists?.descriptions ?? []}
-          categories={lists?.categories ?? []}
-          paymentMethods={lists?.paymentMethods ?? []}
-          onSubmit={handleSubmit}
-          onCancel={() => setEditingExpense(null)}
-          isPending={isPending}
-          onAddDescription={handleAddDescription}
-        />
-      </div>
+      <PullToRefresh onRefresh={refetchExpenses}>
+        <div className="mb-8">
+          <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+            {editingExpense ? 'Editar gasto' : 'Nuevo gasto'}
+          </h2>
+          {mutationError && (
+            <p className="mb-3 text-xs text-destructive">{mutationError}</p>
+          )}
+          <ExpenseForm
+            key={editingExpense?.id ?? formKey}
+            editingExpense={editingExpense}
+            defaultWhoPaid={defaultWhoPaid}
+            descriptions={lists?.descriptions ?? []}
+            categories={lists?.categories ?? []}
+            paymentMethods={lists?.paymentMethods ?? []}
+            onSubmit={handleSubmit}
+            onCancel={() => setEditingExpense(null)}
+            isPending={isPending}
+            onAddDescription={handleAddDescription}
+          />
+        </div>
 
-      <div>
-        <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-          Gastos recientes
-        </h2>
-        <ExpenseList
-          expenses={expenses}
-          isLoading={loadingExpenses}
-          onEdit={setEditingExpense}
-          onDelete={setDeletingExpense}
-        />
-      </div>
+        <div>
+          <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+            Gastos recientes
+          </h2>
+          <ExpenseList
+            expenses={expenses}
+            isLoading={loadingExpenses}
+            onEdit={setEditingExpense}
+            onDelete={setDeletingExpense}
+          />
+        </div>
 
-      <DeleteConfirmDialog
-        open={!!deletingExpense}
-        onOpenChange={(open) => {
-          if (!open) setDeletingExpense(null)
-        }}
-        onConfirm={handleDeleteConfirm}
-        isPending={deleteMutation.isPending}
-      />
+        <DeleteConfirmDialog
+          open={!!deletingExpense}
+          onOpenChange={(open) => {
+            if (!open) setDeletingExpense(null)
+          }}
+          onConfirm={handleDeleteConfirm}
+          isPending={deleteMutation.isPending}
+        />
+      </PullToRefresh>
     </div>
   )
 }

@@ -25,7 +25,7 @@ export function SelectSheet({ value, onValueChange, placeholder, title, options,
           value={value}
           onChange={(e) => onValueChange(e.target.value)}
           className={cn(
-            'flex h-9 w-full cursor-pointer appearance-none items-center rounded-md border border-input bg-background px-3 py-1 pr-8 text-sm shadow-sm transition-colors',
+            'flex h-9 w-full cursor-pointer appearance-none items-center rounded-md border border-input bg-background px-3 py-1 pr-8 text-sm max-sm:text-base shadow-sm transition-colors',
             !selected && 'text-muted-foreground',
             className,
           )}
