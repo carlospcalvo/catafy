@@ -59,6 +59,7 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar…"
           className="h-10 w-full border-b border-border bg-transparent pl-9 pr-3 text-sm max-sm:text-base outline-none placeholder:text-muted-foreground"
+          autoComplete="off"
           autoFocus
         />
       </div>
