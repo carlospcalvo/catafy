@@ -6,7 +6,7 @@ import {
   NumberField,
   NumberFieldGroup,
   NumberFieldInput,
-} from '#/components/reui/number-field'
+} from '#/components/ui/number-field'
 import { SelectSheet } from '#/components/ui/select-sheet'
 import { RadioGroup, RadioGroupCard } from '#/components/ui/radio-group'
 import { DatePicker } from '#/components/ui/date-picker'
@@ -88,7 +88,7 @@ export function ExpenseForm({
     }
   }, [editingExpense, defaultWhoPaid])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault()
     const result = validateFormData({
       ...form,
@@ -166,7 +166,7 @@ export function ExpenseForm({
             format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}
           >
             <NumberFieldGroup>
-              <NumberFieldInput style={{ fontSize: 16 }} />
+              <NumberFieldInput style={{ fontSize: 16 }} placeholder="1000" />
             </NumberFieldGroup>
           </NumberField>
           {errors.amount && (
@@ -289,7 +289,7 @@ export function ExpenseForm({
         )}
         <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
           {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-          {isEditing ? 'Actualizar' : 'Agregar gasto'}
+          {isPending ? 'Guardando…' : (isEditing ? 'Actualizar' : 'Agregar gasto')}
         </Button>
       </div>
     </form>

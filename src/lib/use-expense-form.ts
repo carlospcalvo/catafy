@@ -28,8 +28,7 @@ export function useExpenseForm(token: string | null, onSessionExpired: () => voi
 
   const isPending =
     createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending
+    updateMutation.isPending
 
   const isDeletePending = deleteMutation.isPending
 
