@@ -60,6 +60,8 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           placeholder="Buscar…"
           className="h-10 w-full border-b border-border bg-transparent pl-9 pr-3 text-sm max-sm:text-base outline-none placeholder:text-muted-foreground"
           autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           autoFocus
         />
       </div>
