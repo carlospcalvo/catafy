@@ -31,7 +31,12 @@ function Home() {
   const [formKey, setFormKey] = useState(0)
 
   const { data: lists } = useLists(token)
-  const { data: recent, isLoading: loadingExpenses, isFetching, refetch: refetchExpenses } = useRecentExpenses(token)
+  const {
+    data: recent,
+    isLoading: loadingExpenses,
+    isFetching,
+    refetch: refetchExpenses,
+  } = useRecentExpenses(token)
 
   const createMutation = useCreateExpense(token ?? '')
   const updateMutation = useUpdateExpense(token ?? '')
@@ -72,7 +77,9 @@ function Home() {
   }, [])
 
   const handleSignOut = () => {
-    try { google.accounts.id.disableAutoSelect() } catch {}
+    try {
+      google.accounts.id.disableAutoSelect()
+    } catch {}
     clearStoredToken()
     setToken(null)
   }
@@ -107,18 +114,21 @@ function Home() {
     }
   }
 
-  const handleAddDescription = useCallback((description: string) => {
-    addDescriptionMutation.mutate(description, {
-      onSuccess: () => toast.success('Descripción creada'),
-      onError: (err) => {
-        if (err.message === 'Sesión expirada') {
-          handleSessionExpired()
-        } else {
-          toast.error(err.message)
-        }
-      },
-    })
-  }, [addDescriptionMutation, handleSessionExpired])
+  const handleAddDescription = useCallback(
+    (description: string) => {
+      addDescriptionMutation.mutate(description, {
+        onSuccess: () => toast.success('Descripción creada'),
+        onError: (err) => {
+          if (err.message === 'Sesión expirada') {
+            handleSessionExpired()
+          } else {
+            toast.error(err.message)
+          }
+        },
+      })
+    },
+    [addDescriptionMutation, handleSessionExpired],
+  )
 
   const handleDeleteConfirm = () => {
     if (!deletingExpense) return
@@ -182,7 +192,7 @@ function Home() {
       </div>
 
       <div className="mb-8">
-        <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+        <h2 className="mb-3 text-md font-semibold text-muted-foreground">
           {editingExpense ? 'Editar gasto' : 'Nuevo gasto'}
         </h2>
         {mutationError && (
@@ -204,7 +214,7 @@ function Home() {
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-muted-foreground">
+          <h2 className="text-md font-semibold text-muted-foreground">
             Gastos recientes
           </h2>
           <button
@@ -212,7 +222,9 @@ function Home() {
             onClick={() => refetchExpenses()}
             className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground active:text-foreground"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`}
+            />
             Actualizar
           </button>
         </div>

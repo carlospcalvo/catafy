@@ -92,7 +92,11 @@ export function ExpenseForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const result = validateFormData({ ...form, amount: form.amount ?? 0, date: form.date.split('T')[0] })
+    const result = validateFormData({
+      ...form,
+      amount: form.amount ?? 0,
+      date: form.date.split('T')[0],
+    })
     if (!result.ok) {
       setErrors(result.errors)
       return
@@ -274,18 +278,19 @@ export function ExpenseForm({
         />
       </div>
 
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
         {isEditing && (
           <Button
             type="button"
             variant="outline"
             onClick={onCancel}
             disabled={isPending}
+            className="w-full sm:w-auto"
           >
             Cancelar
           </Button>
         )}
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
           {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           {isEditing ? 'Actualizar' : 'Agregar gasto'}
         </Button>
