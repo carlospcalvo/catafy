@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 
 const SWIPE_THRESHOLD = 80
 const MAX_DRAG = 120
+const VERTICAL_THRESHOLD = 15
 
 export interface SwipeActions {
   dragX: number
@@ -22,6 +23,7 @@ export function useSwipeAction(options: {
   const [isDragging, setIsDragging] = useState(false)
 
   const startXRef = useRef(0)
+  const startYRef = useRef(0)
   const currentXRef = useRef(0)
   const trackingRef = useRef(false)
   const onEditRef = useRef(options.onEdit)
@@ -42,11 +44,22 @@ export function useSwipeAction(options: {
     const el = e.currentTarget as HTMLDivElement
     el.setPointerCapture(e.pointerId)
     startXRef.current = e.clientX
+    startYRef.current = e.clientY
     currentXRef.current = 0
     trackingRef.current = true
     setIsDragging(true)
 
     const onPointerMove = (moveEvent: PointerEvent) => {
+      const dy = Math.abs(moveEvent.clientY - startYRef.current)
+      if (dy > VERTICAL_THRESHOLD) {
+        el.removeEventListener('pointermove', onPointerMove)
+        el.removeEventListener('pointerup', onPointerUp)
+        trackingRef.current = false
+        setIsDragging(false)
+        setDragX(0)
+        currentXRef.current = 0
+        return
+      }
       const dx = moveEvent.clientX - startXRef.current
       currentXRef.current = Math.max(-MAX_DRAG, Math.min(MAX_DRAG, dx))
       setDragX(currentXRef.current)
