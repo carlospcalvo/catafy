@@ -93,9 +93,10 @@ function handleRecent() {
   if (data.length < 2) return respond({ expenses: [] })
 
   var expenses = []
-  // Skip header row, take last 20
+  // Skip header row, take last 20 non-empty rows
   var start = Math.max(1, data.length - 20)
   for (var i = data.length - 1; i >= start; i--) {
+    if (!data[i][COL_ID - 1]) continue
     expenses.push(rowToExpense(data[i]))
   }
 
