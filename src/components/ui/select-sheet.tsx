@@ -55,7 +55,7 @@ export function SelectSheet({ value, onValueChange, placeholder, title, options,
           </button>
           <SheetContent>
             {title && <SheetTitle className="mb-4 text-base font-semibold">{title}</SheetTitle>}
-            <div className="-mx-2 space-y-0.5">
+            <div className="-mx-2 space-y-0.5 pb-safe">
               {options.length === 0 && (
                 <p className="py-4 text-center text-sm text-muted-foreground">Sin opciones</p>
               )}
