@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Sheet, SheetContent, SheetTitle } from '#/components/ui/sheet'
+import { Dialog, DialogContent, DialogTitle } from '#/components/ui/dialog'
 import { cn } from '#/lib/utils'
 import { Check, ChevronDown } from 'lucide-react'
 
@@ -38,23 +38,23 @@ export function SelectSheet({ value, onValueChange, placeholder, title, options,
         <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       </div>
 
-      {/* Bottom sheet for mobile */}
+      {/* Dialog for mobile */}
       <div className="sm:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className={cn(
-              'flex h-9 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors',
-              !selected && 'text-muted-foreground',
-              className,
-            )}
-          >
-            <span>{display}</span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-          </button>
-          <SheetContent>
-            {title && <SheetTitle className="mb-4 text-base font-semibold">{title}</SheetTitle>}
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className={cn(
+            'flex h-9 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors',
+            !selected && 'text-muted-foreground',
+            className,
+          )}
+        >
+          <span>{display}</span>
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        </button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="sm:hidden">
+            {title && <DialogTitle className="mb-4 text-base font-semibold">{title}</DialogTitle>}
             <div className="-mx-2 space-y-0.5">
               {options.length === 0 && (
                 <p className="py-4 text-center text-sm text-muted-foreground">Sin opciones</p>
@@ -82,8 +82,8 @@ export function SelectSheet({ value, onValueChange, placeholder, title, options,
                 )
               })}
             </div>
-          </SheetContent>
-        </Sheet>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   )

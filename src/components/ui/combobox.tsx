@@ -1,6 +1,6 @@
 import { useState, useDeferredValue, useMemo, useRef } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
-import { Sheet, SheetContent, SheetTitle } from '#/components/ui/sheet'
+import { Dialog, DialogContent, DialogTitle } from '#/components/ui/dialog'
 import { cn } from '#/lib/utils'
 import { Check, ChevronDown, Plus, Search } from 'lucide-react'
 
@@ -48,7 +48,7 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
 
   const display = value || placeholder || 'Seleccionar…'
 
-  const optionList = (asSheet: boolean) => (
+  const optionList = (asDialog: boolean) => (
     <div className="flex flex-col">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -62,11 +62,12 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
+          autoFocus={asDialog}
         />
       </div>
       <div className={cn(
         'overflow-y-auto',
-        asSheet ? 'max-h-[50vh]' : 'max-h-60',
+        asDialog ? 'max-h-[50vh]' : 'max-h-60',
       )}>
         {filtered.length === 0 && !showCreate && (
           <p className="px-3 py-6 text-center text-sm text-muted-foreground">Sin resultados</p>
@@ -137,12 +138,12 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           <span className="truncate">{display}</span>
           <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
         </button>
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent>
-            {title && <SheetTitle className="mb-4 text-base font-semibold">{title}</SheetTitle>}
+        <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
+          <DialogContent className="sm:hidden">
+            {title && <DialogTitle className="mb-4 text-base font-semibold">{title}</DialogTitle>}
             {optionList(true)}
-          </SheetContent>
-        </Sheet>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   )
