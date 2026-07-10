@@ -1,6 +1,6 @@
 import { useState, useDeferredValue, useMemo, useRef } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
-import { Dialog, DialogContent, DialogTitle } from '#/components/ui/dialog'
+import { Sheet, SheetContent, SheetTitle } from '#/components/ui/sheet'
 import { cn } from '#/lib/utils'
 import { Check, ChevronDown, Plus, Search } from 'lucide-react'
 
@@ -138,12 +138,12 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           <span className="truncate">{display}</span>
           <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
         </button>
-        <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
-          <DialogContent className="sm:hidden">
-            {title && <DialogTitle className="mb-4 text-base font-semibold">{title}</DialogTitle>}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetContent>
+            {title && <SheetTitle className="mb-4 text-base font-semibold">{title}</SheetTitle>}
             {optionList(true)}
-          </DialogContent>
-        </Dialog>
+          </SheetContent>
+        </Sheet>
       </div>
     </>
   )
