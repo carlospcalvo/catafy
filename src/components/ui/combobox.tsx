@@ -1,4 +1,4 @@
-import { useState, useDeferredValue, useMemo, useRef, useEffect } from 'react'
+import { useState, useDeferredValue, useMemo, useRef } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
 import { Sheet, SheetContent, SheetTitle } from '#/components/ui/sheet'
 import { cn } from '#/lib/utils'
@@ -26,15 +26,6 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
     const q = deferredSearch.toLowerCase()
     return options.filter((o) => o.toLowerCase().includes(q))
   }, [options, deferredSearch])
-
-  useEffect(() => {
-    if (mobileOpen && searchRef.current) {
-      const timer = setTimeout(() => {
-        searchRef.current?.focus()
-      }, 100)
-      return () => clearTimeout(timer)
-    }
-  }, [mobileOpen])
 
   const showCreate = deferredSearch && !filtered.some((o) => o.toLowerCase() === deferredSearch.toLowerCase())
 
@@ -71,12 +62,11 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          autoFocus={!asSheet}
         />
       </div>
       <div className={cn(
         'overflow-y-auto',
-        asSheet ? 'max-h-[50vh] pb-safe' : 'max-h-60',
+        asSheet ? 'max-h-[50vh]' : 'max-h-60',
       )}>
         {filtered.length === 0 && !showCreate && (
           <p className="px-3 py-6 text-center text-sm text-muted-foreground">Sin resultados</p>
