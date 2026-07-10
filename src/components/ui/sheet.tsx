@@ -1,9 +1,20 @@
+import { useEffect } from 'react'
 import { Drawer } from 'vaul'
 import { cn } from '#/lib/utils'
 
-export function Sheet({ children, ...props }: React.ComponentProps<typeof Drawer.Root>) {
+export function Sheet({ open, children, ...props }: React.ComponentProps<typeof Drawer.Root>) {
+  useEffect(() => {
+    if (!open) return
+    const html = document.documentElement
+    const prev = html.style.overflow
+    html.style.overflow = 'clip'
+    return () => {
+      html.style.overflow = prev
+    }
+  }, [open])
+
   return (
-    <Drawer.Root modal={false} repositionInputs={false} {...props}>
+    <Drawer.Root open={open} modal={false} repositionInputs={false} {...props}>
       {children}
     </Drawer.Root>
   )
