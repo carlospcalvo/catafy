@@ -2,8 +2,8 @@ import { useState, useRef, useCallback } from 'react'
 
 const SWIPE_THRESHOLD = 80
 const MAX_DRAG = 120
-const VERTICAL_THRESHOLD = 28
-const DIRECTION_LOCK_THRESHOLD = 10
+const DIRECTION_LOCK_THRESHOLD = 15
+const VERTICAL_ABORT_THRESHOLD = 20
 
 export interface SwipeActions {
   dragX: number
@@ -60,8 +60,18 @@ export function useSwipeAction(options: {
 
       if (directionLocked === null) {
         if (absDx > DIRECTION_LOCK_THRESHOLD || absDy > DIRECTION_LOCK_THRESHOLD) {
-          directionLocked = absDx > absDy ? 'horizontal' : 'vertical'
+          directionLocked = absDx > absDy * 1.5 ? 'horizontal' : 'vertical'
+          if (directionLocked === 'vertical') {
+            el.removeEventListener('pointermove', onPointerMove)
+            el.removeEventListener('pointerup', onPointerUp)
+            trackingRef.current = false
+            setIsDragging(false)
+            setDragX(0)
+            currentXRef.current = 0
+            return
+          }
         }
+        return
       }
 
       if (directionLocked === 'vertical') {
@@ -74,19 +84,18 @@ export function useSwipeAction(options: {
         return
       }
 
-      if (directionLocked === 'horizontal') {
-        if (absDy > VERTICAL_THRESHOLD) {
-          el.removeEventListener('pointermove', onPointerMove)
-          el.removeEventListener('pointerup', onPointerUp)
-          trackingRef.current = false
-          setIsDragging(false)
-          setDragX(0)
-          currentXRef.current = 0
-          return
-        }
-        currentXRef.current = Math.max(-MAX_DRAG, Math.min(MAX_DRAG, dx))
-        setDragX(currentXRef.current)
+      if (absDy > VERTICAL_ABORT_THRESHOLD) {
+        el.removeEventListener('pointermove', onPointerMove)
+        el.removeEventListener('pointerup', onPointerUp)
+        trackingRef.current = false
+        setIsDragging(false)
+        setDragX(0)
+        currentXRef.current = 0
+        return
       }
+
+      currentXRef.current = Math.max(-MAX_DRAG, Math.min(MAX_DRAG, dx))
+      setDragX(currentXRef.current)
     }
 
     const onPointerUp = () => {
