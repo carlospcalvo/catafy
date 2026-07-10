@@ -2,7 +2,8 @@ import { useState, useRef, useCallback } from 'react'
 
 const SWIPE_THRESHOLD = 80
 const MAX_DRAG = 120
-const VERTICAL_THRESHOLD = 15
+const VERTICAL_THRESHOLD = 28
+const DIRECTION_LOCK_THRESHOLD = 10
 
 export interface SwipeActions {
   dragX: number
@@ -49,9 +50,21 @@ export function useSwipeAction(options: {
     trackingRef.current = true
     setIsDragging(true)
 
+    let directionLocked: 'horizontal' | 'vertical' | null = null
+
     const onPointerMove = (moveEvent: PointerEvent) => {
-      const dy = Math.abs(moveEvent.clientY - startYRef.current)
-      if (dy > VERTICAL_THRESHOLD) {
+      const dx = moveEvent.clientX - startXRef.current
+      const dy = moveEvent.clientY - startYRef.current
+      const absDx = Math.abs(dx)
+      const absDy = Math.abs(dy)
+
+      if (directionLocked === null) {
+        if (absDx > DIRECTION_LOCK_THRESHOLD || absDy > DIRECTION_LOCK_THRESHOLD) {
+          directionLocked = absDx > absDy ? 'horizontal' : 'vertical'
+        }
+      }
+
+      if (directionLocked === 'vertical') {
         el.removeEventListener('pointermove', onPointerMove)
         el.removeEventListener('pointerup', onPointerUp)
         trackingRef.current = false
@@ -60,9 +73,20 @@ export function useSwipeAction(options: {
         currentXRef.current = 0
         return
       }
-      const dx = moveEvent.clientX - startXRef.current
-      currentXRef.current = Math.max(-MAX_DRAG, Math.min(MAX_DRAG, dx))
-      setDragX(currentXRef.current)
+
+      if (directionLocked === 'horizontal') {
+        if (absDy > VERTICAL_THRESHOLD) {
+          el.removeEventListener('pointermove', onPointerMove)
+          el.removeEventListener('pointerup', onPointerUp)
+          trackingRef.current = false
+          setIsDragging(false)
+          setDragX(0)
+          currentXRef.current = 0
+          return
+        }
+        currentXRef.current = Math.max(-MAX_DRAG, Math.min(MAX_DRAG, dx))
+        setDragX(currentXRef.current)
+      }
     }
 
     const onPointerUp = () => {
