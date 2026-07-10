@@ -2,8 +2,8 @@ import { useState, useRef, useCallback } from 'react'
 
 const SWIPE_THRESHOLD = 80
 const MAX_DRAG = 120
-const DIRECTION_LOCK_THRESHOLD = 15
-const VERTICAL_ABORT_THRESHOLD = 20
+const DIRECTION_LOCK_THRESHOLD = 20
+const VERTICAL_ABORT_THRESHOLD = 25
 
 export interface SwipeActions {
   dragX: number
@@ -60,7 +60,7 @@ export function useSwipeAction(options: {
 
       if (directionLocked === null) {
         if (absDx > DIRECTION_LOCK_THRESHOLD || absDy > DIRECTION_LOCK_THRESHOLD) {
-          directionLocked = absDx > absDy * 1.5 ? 'horizontal' : 'vertical'
+          directionLocked = absDx > absDy * 2 ? 'horizontal' : 'vertical'
           if (directionLocked === 'vertical') {
             el.removeEventListener('pointermove', onPointerMove)
             el.removeEventListener('pointerup', onPointerUp)
