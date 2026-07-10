@@ -3,7 +3,7 @@ import { cn } from '#/lib/utils'
 
 export function Sheet({ children, ...props }: React.ComponentProps<typeof Drawer.Root>) {
   return (
-    <Drawer.Root {...props}>
+    <Drawer.Root modal={false} {...props}>
       {children}
     </Drawer.Root>
   )
@@ -12,10 +12,10 @@ export function Sheet({ children, ...props }: React.ComponentProps<typeof Drawer
 export function SheetContent({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <Drawer.Portal>
-      <Drawer.Overlay className="fixed inset-0 z-50 cursor-pointer bg-black/50" />
+      <div className="fixed inset-0 z-50 bg-black/50 shadow-[inset_0_8px_32px_rgba(0,0,0,0.25)]" />
       <Drawer.Content
         className={cn(
-          'fixed inset-x-0 bottom-0 z-50 mt-24 max-h-[96%] rounded-t-xl border bg-background p-6 shadow-lg',
+          'fixed inset-x-0 bottom-0 z-50 mt-24 max-h-[96%] rounded-t-xl border bg-background p-6',
           className,
         )}
       >
