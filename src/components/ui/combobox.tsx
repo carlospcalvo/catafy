@@ -62,7 +62,7 @@ export function Combobox({ value, onValueChange, options, placeholder, title, on
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          autoFocus={asDialog}
+          autoFocus={false}
         />
       </div>
       <div className={cn(
