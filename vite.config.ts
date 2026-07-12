@@ -12,7 +12,7 @@ const config = defineConfig({
     viteReact(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'favicon.svg', 'favicon-96x96.png', 'apple-touch-icon.png', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'favicon.svg', 'favicon-96x96.png', 'apple-touch-icon.png', 'manifest.json', 'icons/*.png'],
       manifest: false,
       injectRegister: false,
     }),
