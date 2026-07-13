@@ -16,7 +16,7 @@ const config = defineConfig({
         'favicon.ico',
         'favicon.svg',
         'favicon-96x96.png',
-        'apple-touch-icon.png',
+        'apple-touch-icon-v2.png',
         'manifest.json',
         'catafy-logo.png',
         'icons/*.png',
@@ -30,3 +30,5 @@ const config = defineConfig({
 })
 
 export default config
+
+
